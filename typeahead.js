@@ -1,6 +1,6 @@
 module.exports = (function(React) {
   'use strict';
-  
+
   var React = require( 'react' ),
       customWhere = function customWhere(arr, t) {
         var results = [];
@@ -39,11 +39,15 @@ module.exports = (function(React) {
     handleFocus: function(e) {
       this.setState({selected: false});
     },
+    handleBlur: function(e) {
+      this.setState({selected: true})
+    },
     componentWillReceiveProps: function(nextProps) {
       this.setState({value: nextProps.value || '', index: -1, selected: true});
     },
     render: function() {
       this.items = [];
+
 
       var searchResult = this.state.selected || (
         <div className="list-group typeahead">
@@ -51,6 +55,7 @@ module.exports = (function(React) {
         </div>
       );
 
+      console.log('searchResult', searchResult    )
       this.state.selected || customWhere(this.props.array, function(el) {
         el = el.toLowerCase();
         var val = this.state.value.toLowerCase();
@@ -66,7 +71,7 @@ module.exports = (function(React) {
       return (
         <div className="field-group">
           <input type="text" id={this.props.id} required className="form-control" value={this.state.value} placeholder={this.props.placeholder}
-                  onChange={this.handleChange} onKeyDown={this.selectItem} onFocus={this.handleFocus} />
+                  onChange={this.handleChange} onKeyDown={this.selectItem} onFocus={this.handleFocus} onBlur={this.handleBlur} />
           {searchResult}
         </div>
       );
