@@ -62,10 +62,11 @@ module.exports = React.createClass({
       items: []
     };
   },
-  handleClick: function(e) {
-    console.log('handleClick', e)
-    this.props.onSelect(e.target.innerHTML)
-    this.setState({value: '', listOpen: false, autocomplete: ''});
+  handleClick: function(item) {
+    return function (e) {
+      this.props.onSelect(item)
+      this.setState({value: '', listOpen: false, autocomplete: ''});
+    }.bind(this)
   },
   handleChange: function(e) {
     console.log('handleChange', e.target.value)
@@ -202,7 +203,7 @@ module.exports = React.createClass({
                   key={item}
                   className={i === this.state.index ? 'list-group-item active' : 'list-group-item'}
                   style={get(this.props.style, 'typeahead.item')}
-                  onClick={this.handleClick}
+                  onClick={this.handleClick(item)}
                   onMouseOut={this.handleHoverOff}
                   onMouseOver={this.handleHoverOn} >
                   <BoldedElement value={this.props.value} text={item} />
