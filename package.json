@@ -6,7 +6,11 @@
   "directories": {
     "test": "test"
   },
-  "browserify": {"transform": ["reactify"]},
+  "browserify": {
+    "transform": [
+      "reactify"
+    ]
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,10 +23,22 @@
     "UI",
     "Typeahead"
   ],
-  "author": "Pritesh Gupta",
+  "author": {
+    "name": "Pritesh Gupta"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/priteshgupta/React-Typeahead/issues"
   },
-  "homepage": "https://github.com/priteshgupta/React-Typeahead"
+  "homepage": "https://github.com/priteshgupta/React-Typeahead",
+  "gitHead": "5532a8f3fe0eb35dd259fa63eedf15faa39b3dff",
+  "readme": "# React-Typeahead\nQuite Possibly the Simplest Typeahead\n\nThis is not a fancy library or plugin. This is a super simple (but nicely working) React typeahead. It does support keyboard navigation, carriage selecting, etc. There are no dependencies (other than React, duh), although Bootstrap is recommended for styling (unless you don't mind styling it).\n\nAlso I used a function called `customWhere`, which is essentially a faster `Array.prototype.filter()`. You can feel free to replace it with the native `filter()`, I don't think there should be a noticeable performance hit.\n\nDefinition of customWhere:\n\n```\nvar customWhere = function customWhere(arr, t) {\n  var results = [];\n\n  for(var i = 0, len = arr.length; i < len; i++) {\n    var item = arr[i];\n\n    if (t(item)) {\n      results.push(item);\n    }\n  }\n\n  return results;\n};\n```\n\n## Styling\n\nThe typeahead relies on Bootstrap styling of list groups. It is not required, but recommended. The only other additional style which I added is\n\n```\n.typeahead {\n  position: absolute;\n  z-index: 1; // or more\n  width: 200px; // or 300px, etc\n}\n```\n\nwhich too is not required, but makes the typeahead display on top of the content (ideal), than pushing the content down.\n\n## Usage\n\nYou can load this module as a CommonJS module by doing something like\n\n`var Typeahead = require('./typeahead.jsx');` in your js(x) file and then use it directly as\n\n`<Typeahead id=\"myTypeahead\" array={arrayToFilter} placeholder=\"My Typeahead\" />;`.\n\nGet the value by `document.getElementById('myTypeahead').value` or by passing a `ref` or by passing an object (and update the object in `handleChange()`).",
+  "readmeFilename": "README.md",
+  "_id": "simple-react-typeahead@0.1.1",
+  "_shasum": "3e0546699be6f1bc5f1305b1d9138de7edf5612c",
+  "_from": "../../../../../tmp/npm-5176-dd0214f5/git-cache-f27f3e207d38/5532a8f3fe0eb35dd259fa63eedf15faa39b3dff",
+  "_resolved": "git://github.com/simontegg/React-Typeahead#5532a8f3fe0eb35dd259fa63eedf15faa39b3dff",
+  "dependencies": {
+    "object-path": "^0.9.2"
+  }
 }

@@ -1,4 +1,5 @@
 var extend = require('xtend')
+var get = require('object-path').get
 var React = require( 'react' )
 
 //Do the nifty bootstrap thing where the search values are bolded in the search results
@@ -142,16 +143,16 @@ module.exports = React.createClass({
       : []
 
     var listGroupStyle = extend(
-      this.props.style.typeahead.listGroup,
+      get(this.props.style, 'typeahead.listGroup'),
       {
         position: 'absolute',
-        'z-index': 1,
+        zIndex: 1,
         width: '200px',
       }
     )
 
     var hintInputStyle = extend(
-      this.props.style.typeahead.input,
+      get(this.props.style, 'typeahead.input'),
       {
         position: 'absolute',
         borderColor: 'transparent',
@@ -162,7 +163,7 @@ module.exports = React.createClass({
     )
 
     var inputStyle = extend(
-      this.props.style.typeahead.input,
+      get(this.props.style, 'typeahead.input')  ,
       {
         position: 'relative',
         verticalAlign: 'top',
@@ -171,7 +172,7 @@ module.exports = React.createClass({
     )
 
     return (
-      <div className='field-group' style={this.props.style.typeahead.fieldGroup}>
+      <div className='field-group' style={get(this.props.style, 'typeahead.fieldGroup')}>
         <input
           type='text'
           className='typeahead'
@@ -200,7 +201,7 @@ module.exports = React.createClass({
                 <a
                   key={item}
                   className={i === this.state.index ? 'list-group-item active' : 'list-group-item'}
-                  style={this.props.style.typeahead.item}
+                  style={get(this.props.style, 'typeahead.item')}
                   onClick={this.handleClick}
                   onMouseOut={this.handleHoverOff}
                   onMouseOver={this.handleHoverOn} >
