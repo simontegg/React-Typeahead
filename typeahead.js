@@ -1,11 +1,12 @@
 var extend = require('xtend')
 var get = require('object-path').get
 var React = require( 'react' )
+var r = require('r-dom')
 
 //Do the nifty bootstrap thing where the search values are bolded in the search results
 var BoldedElement = React.createClass({
   render: function () {
-    if (this.props.value = '') return (<span>{this.props.text}</span>)
+    if (this.props.value = '') return (React.createElement("span", null, this.props.text))
     var val = this.props.val
     var text = this.props.text
     var boldedText = []
@@ -15,17 +16,17 @@ var BoldedElement = React.createClass({
       if (i < arr.length -1) boldedText.push(val)
     })
 
-    return (<span>
-        {
+    return (React.createElement("span", null,
+
           boldedText.map(function (chunk) {
             return (
-              <span style={chunk === val ? {fontWeight: 'bold'} : null }>
-                {chunk}
-              </span>
+              React.createElement("span", {style: chunk === val ? {fontWeight: 'bold'} : null},
+                chunk
+              )
             )
           })
-        }
-        </span>
+
+        )
     )
   }
 })
@@ -173,46 +174,46 @@ module.exports = React.createClass({
     )
 
     return (
-      <div className='field-group' style={get(this.props.style, 'typeahead.fieldGroup')}>
-        <input
-          type='text'
-          className='typeahead'
-          readonly
-          autocomplete='off'
-          style={hintInputStyle}
-          tabIndex='-1'
-          value={this.state.autocomplete} />
-        <input
-          type="text"
-          className="typeahead"
-          id={this.props.id}
-          required
-          className=""
-          style={inputStyle}
-          value={this.state.value}
-          placeholder={this.props.placeholder}
-          onChange={this.handleChange}
-          onKeyDown={this.selectItem}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur} />
+      React.createElement("div", {className: "field-group", style: get(this.props.style, 'typeahead.fieldGroup')},
+        React.createElement("input", {
+          type: "text",
+          className: "typeahead",
+          readonly: true,
+          autocomplete: "off",
+          style: hintInputStyle,
+          tabIndex: "-1",
+          value: this.state.autocomplete}),
+        React.createElement("input", {
+          type: "text",
+          className: "typeahead",
+          id: this.props.id,
+          required: true,
+          className: "",
+          style: inputStyle,
+          value: this.state.value,
+          placeholder: this.props.placeholder,
+          onChange: this.handleChange,
+          onKeyDown: this.selectItem,
+          onFocus: this.handleFocus,
+          onBlur: this.handleBlur}),
 
-          <div className="list-group typeahead" style={listGroupStyle}>
-            {items.map(function (item, i) {
+          React.createElement("div", {className: "list-group typeahead", style: listGroupStyle},
+            items.map(function (item, i) {
               return (
-                <a
-                  key={item}
-                  className={i === this.state.index ? 'list-group-item active' : 'list-group-item'}
-                  style={get(this.props.style, 'typeahead.item')}
-                  onClick={this.handleClick(item)}
-                  onMouseOut={this.handleHoverOff}
-                  onMouseOver={this.handleHoverOn} >
-                  <BoldedElement value={this.props.value} text={item} />
-                </a>
+                React.createElement("a", {
+                  key: item,
+                  className: i === this.state.index ? 'list-group-item active' : 'list-group-item',
+                  style: get(this.props.style, 'typeahead.item'),
+                  onClick: this.handleClick(item),
+                  onMouseOut: this.handleHoverOff,
+                  onMouseOver: this.handleHoverOn},
+                  React.createElement(BoldedElement, {value: this.props.value, text: item})
+                )
               )
-            }.bind(this))}
-          </div>
+            }.bind(this))
+          )
 
-      </div>
+      )
     );
   }
 });
