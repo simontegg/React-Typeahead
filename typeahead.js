@@ -1,7 +1,6 @@
 var extend = require('xtend')
 var get = require('object-path').get
 var React = require( 'react' )
-var r = require('r-dom')
 
 //Do the nifty bootstrap thing where the search values are bolded in the search results
 var BoldedElement = React.createClass({
@@ -33,7 +32,7 @@ var BoldedElement = React.createClass({
 
 module.exports = React.createClass({
   propTypes: {
-    array: React.PropTypes.array,
+    array: React.PropTypes.array, // [{id: 'uniqueId', label: 'string'}
     id: React.PropTypes.string,
     placeholder: React.PropTypes.string,
     onSelect: React.PropTypes.func,
@@ -55,43 +54,43 @@ module.exports = React.createClass({
 
   getInitialState: function() {
     return {
-      value: '',
+      value: {text: ''},
       index: -1,
       listOpen: false,
       isHovered: false,
-      autocomplete: '',
+      autocomplete: {},
       items: []
     };
   },
   handleClick: function(item) {
     return function (e) {
-      this.props.onSelect(item)
-      this.setState({value: '', listOpen: false, autocomplete: ''});
+      this.props.onSelect(item.id)
+      this.setState({value: {}, listOpen: false, autocomplete: {}});
     }.bind(this)
   },
   handleChange: function(e) {
     console.log('handleChange', e.target.value)
-    var val = e.target.value.toLowerCase()
+    var text = e.target.value.toLowerCase()
     var index = 0
-    var autocomplete
+    var autocomplete = {}
 
-    var items = this.props.array.reduce(function(memo, el, i) {
+    var items = this.props.array.reduce(function(memo, item, i) {
       if (i > 9) return memo
-      var el = el.toLowerCase();
-      if (el.indexOf(val) > -1 || el.replace('-', ' ').indexOf(val) > -1) {
-        memo.push(el)
+      var el = item.label.toLowerCase();
+      if (el.indexOf(text) > -1 || el.replace('-', ' ').indexOf(text) > -1) {
+        memo.push(item)
       }
       return memo
     }, [])
 
-    if (val !== '' && items[0] && items[0].indexOf(val) === 0 ) {
+    if (text !== '' && items[0] && items[0].label.indexOf(text) === 0 ) {
       autocomplete = items[0]
     }
 
 
     console.log('autocomplete', autocomplete)
     this.setState({
-      value: val,
+      value: {label: text},
       index: 0,
       autocomplete: autocomplete,
       items: items
@@ -112,20 +111,20 @@ module.exports = React.createClass({
     }
     else if (e.keyCode === 9) {
       e.preventDefault()
-      this.setState({value: '', listOpen: true, index: -1, autocomplete: ''});
-      this.props.onSelect(e.target.previousSibling.value)
+      this.props.onSelect(this.state.autocomplete.id)
+      this.setState({value: {text: ''}, listOpen: true, index: -1, autocomplete: {}});
+
 
     }
     else if (e.keyCode === 13) {
-
-      this.props.onSelect(e.target.value)
+      this.props.onSelect(this.state.value.id)
     }
   },
   handleFocus: function(e) {
     this.setState({listOpen: true});
   },
   handleBlur: function(e) {
-    if (!this.state.isHovered) this.setState({listOpen: false, autocomplete: '', value: ''})
+    if (!this.state.isHovered) this.setState({listOpen: false, autocomplete: {}, value: {text: ''}})
   },
   handleHoverOn: function (e) {
     this.setState({isHovered: true})
@@ -134,15 +133,17 @@ module.exports = React.createClass({
     this.setState({isHovered: false})
   },
   componentWillReceiveProps: function(nextProps) {
-    this.setState({value: nextProps.value || '', index: -1 });
+    this.setState({array: nextProps.array, index: -1 });
   },
   render: function() {
     var val = this.state.value
     var items = this.state.listOpen ?
-      (this.state.items.length === 0 || val === '') ?
+      (this.state.items.length === 0 || typeof val.id === 'undefined') ?
         this.props.array :
         this.state.items
       : []
+
+    console.log('items', items, this.props.array, this.state.items, val)
 
     var listGroupStyle = extend(
       get(this.props.style, 'typeahead.listGroup'),
@@ -152,7 +153,6 @@ module.exports = React.createClass({
         width: '200px',
       }
     )
-
     var hintInputStyle = extend(
       get(this.props.style, 'typeahead.input'),
       {
@@ -182,7 +182,7 @@ module.exports = React.createClass({
           autocomplete: "off",
           style: hintInputStyle,
           tabIndex: "-1",
-          value: this.state.autocomplete}),
+        value: this.state.autocomplete.text}),
         React.createElement("input", {
           type: "text",
           className: "typeahead",
@@ -190,7 +190,7 @@ module.exports = React.createClass({
           required: true,
           className: "",
           style: inputStyle,
-          value: this.state.value,
+          value: this.state.value.text,
           placeholder: this.props.placeholder,
           onChange: this.handleChange,
           onKeyDown: this.selectItem,
@@ -201,13 +201,13 @@ module.exports = React.createClass({
             items.map(function (item, i) {
               return (
                 React.createElement("a", {
-                  key: item,
+                  key: item.id + 'list-item',
                   className: i === this.state.index ? 'list-group-item active' : 'list-group-item',
                   style: get(this.props.style, 'typeahead.item'),
                   onClick: this.handleClick(item),
                   onMouseOut: this.handleHoverOff,
                   onMouseOver: this.handleHoverOn},
-                  React.createElement(BoldedElement, {value: this.props.value, text: item})
+                  React.createElement(BoldedElement, {value: this.state.value.text, text: item.label})
                 )
               )
             }.bind(this))
